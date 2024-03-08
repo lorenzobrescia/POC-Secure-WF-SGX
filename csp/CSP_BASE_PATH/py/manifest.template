@@ -1,0 +1,66 @@
+loader.entrypoint = "file:{{ gramine.libos }}"
+libos.entrypoint = "{{ entrypoint }}"
+
+loader.log_level = "{{ log_level }}"
+loader.argv = [
+   "{{ entrypoint }}",
+   "/{{ source_code }}",
+]
+
+# Customize
+loader.env.HOME = "/home/icolonne"
+loader.env.LD_LIBRARY_PATH = "/lib:/lib64:/usr/lib:/usr/lib64:"
+loader.env.SECRET_PROVISION_CA_CHAIN_PATH = "/ca.crt"
+
+# Fill
+loader.env.SECRET_PROVISION_SERVERS = "user_ip:port"
+
+loader.env.LD_PRELOAD = "libsecret_prov_attest.so"
+loader.env.SECRET_PROVISION_CONSTRUCTOR = "1"
+loader.env.SECRET_PROVISION_SET_KEY = "default"
+
+fs.mounts = [
+  { path = "/lib", uri = "file:{{ gramine.runtimedir() }}" },
+  { path = "/lib64", uri = "file:/lib64" },
+  { path = "/usr/lib64", uri = "file:/usr/lib64" },
+  
+  {% for path in python.get_sys_path(entrypoint) %}
+      { path = "{{ path }}", uri = "file:{{ path }}" },
+  {% endfor %}
+  
+  { type = "tmpfs", path = "/tmp" },
+  
+  { path = "{{ entrypoint }}", uri = "file:{{ entrypoint }}" },
+  { path = "/ca.crt", uri = "file:ssl/ca.crt" },
+  { path = "/etc/hosts", uri = "file:ssl/hosts" },
+
+  { path = "/{{ source_code }}", uri = "file:{{ source_code }}" },
+  { path = "/input/plain/", uri = "file:input/plain/" },
+  { type = "encrypted", path = "/input/enc/", uri = "file:input/enc/" }, 
+  { type = "encrypted", path = "/results/", uri = "file:results/" },
+]
+
+sgx.enclave_size = "2G"
+sgx.remote_attestation = "dcap"
+
+sgx.trusted_files = [
+  "file:{{ gramine.libos }}",
+  "file:{{ gramine.runtimedir() }}/",
+  "file:{{ entrypoint }}",
+  "file:{{ source_code }}",
+  "file:input/plain/",  
+
+  "file:/etc/host.conf",
+  "file:/etc/hosts",
+  "file:/etc/nsswitch.conf",
+  "file:/etc/resolv.conf",
+  "file:ssl/ca.crt",
+  "file:ssl/hosts",
+  
+  "file:/lib64/",
+  "file:/usr/lib64/",
+
+  {% for path in python.get_sys_path(entrypoint) %}
+      "file:{{ path }}{{ '/' if path.is_dir() else '' }}",
+  {% endfor %}
+]

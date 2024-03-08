@@ -1,0 +1,26 @@
+entrypoint = entry
+source_code := entry.c
+
+all: entry c.manifest.sgx c.sig
+
+${entrypoint}: ${source_code}
+	gcc $< -o $@
+
+c.manifest: manifest.template
+	gramine-manifest \
+	-Dlog_level=error \
+	-Dentrypoint=${entrypoint} \
+	-Dsource_code= \
+	$< >$@
+
+c.manifest.sgx c.sig: sgx_sign
+	@:
+
+.INTERMEDIATE: sgx_sign
+sgx_sign: c.manifest
+	gramine-sgx-sign \
+		--manifest $< \
+		--output $<.sgx
+
+clean:
+	rm -f c.manifest c.manifest.sgx c.sig entry

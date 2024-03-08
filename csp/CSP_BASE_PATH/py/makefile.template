@@ -1,0 +1,25 @@
+entrypoint := $(realpath $(shell sh -c "command -v python3"))
+source_folder := ./
+source_code := ${source_folder}entry.py
+
+all: py.manifest.sgx py.sig
+
+py.manifest: manifest.template
+	gramine-manifest \
+	-Dlog_level=error \
+	-Dsource_folder=${source_folder} \
+	-Dsource_code=${source_code} \
+	-Dentrypoint=${entrypoint} \
+	$< >$@
+
+py.manifest.sgx py.sig: sgx_sign
+	@:
+
+.INTERMEDIATE: sgx_sign
+sgx_sign: py.manifest
+	gramine-sgx-sign \
+		--manifest $< \
+		--output $<.sgx
+
+clean:
+	rm -f py.manifest py.manifest.sgx py.sig py.token
