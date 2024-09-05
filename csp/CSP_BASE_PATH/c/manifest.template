@@ -5,7 +5,7 @@ loader.log_level = "{{ log_level }}"
 loader.env.LD_LIBRARY_PATH = "/lib:/lib64:/usr/lib:/usr/lib64:"
 loader.env.SECRET_PROVISION_CA_CHAIN_PATH = "/ca.crt"
 
-# Fill
+# Fill ip:port for remote attestation
 loader.env.SECRET_PROVISION_SERVERS = "ip:port"
 
 loader.env.LD_PRELOAD = "libsecret_prov_attest.so"

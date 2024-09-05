@@ -14,7 +14,7 @@ decrypt="gramine-sgx-pf-crypt decrypt -w ../server/provisioning_key"
 cp_results_back="scp -r ${CSP_SERVER}:${CSP_PATH}${RESULTS_PATH}* ${RESULTS_PATH}"
 
 # Retrieve output from remote CSP to local machine
-$($cp_back)
+$($cp_results_back)
 
 ### Decrypting results files ###
 files=($(ls results/))
