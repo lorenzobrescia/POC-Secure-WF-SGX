@@ -2,7 +2,8 @@
 
 Our reference paper is [this](https://doi.org/10.1145/3642978.3652834), to cite us use the following:
 
-```@inproceedings{10.1145/3642978.3652834,
+```
+@inproceedings{10.1145/3642978.3652834,
 author = {Brescia, Lorenzo and Aldinucci, Marco},
 title = {Secure Generic Remote Workflow Execution with TEEs},
 year = {2024},
@@ -18,7 +19,8 @@ numpages = {6},
 keywords = {trusted execution environment, workflow, Intel SGX, gramine, privacy-preserving, confidential computing},
 location = {Athens, Greece},
 series = {WiDE '24}
-}```
+}
+```
 
 ## Prerequisites
 1. Gramine in both User and CSP machines
